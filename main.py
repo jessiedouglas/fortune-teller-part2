@@ -33,6 +33,7 @@
 import webapp2
 import os
 import random
+import jinja2
 
 
 def get_fortune():
@@ -50,13 +51,16 @@ def get_fortune():
 
 
 #remember, you can get this by searching for jinja2 google app engine
-jinja_current_directory = "insert jinja2 environment variable here"
+jinja_current_directory = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
 
 class FortuneHandler(webapp2.RequestHandler):
     def get(self):
-        # In part 2, instead of returning this string,
-        # make a function call that returns a random fortune.
-        self.response.write('a response from the FortuneHandler')
+        template = jinja_current_directory.get_template(
+            'templates/fortune_results.html')
+        self.response.write(template.render())
     #add a post method
     #def post(self):
 
